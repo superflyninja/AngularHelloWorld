@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {trigger,style,transition,animate,keyframes,query,stagger} from '@angular/animations';
 
+import { DataService } from '../data.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -36,23 +38,28 @@ export class HomeComponent implements OnInit {
 
   btnText: string = 'Add item';
   itemListText: string = 'My first list item';
-  items = ["Item 1", "Item 2", "Item 3"];
+  items = [];//"Item 1", "Item 2", "Item 3"]; itmes now populated from data service
 
-  constructor() { }
+  constructor( private _data: DataService ) { }
 
   ngOnInit() {
+    this._data.item.subscribe(res => this.items = res); //ph added
     this.itemCount = this.items.length;
-    
+    this._data.changeItem(this.items);
   }
 
   addItem(){
     this.items.push(this.itemListText);
     this.itemListText ='';
     this.itemCount = this.items.length;
+
+    this._data.changeItem(this.items);
   }
 
   removeItem(i){
     this.items.splice(i,1);
+
+    this._data.changeItem(this.items);
   }
 
 }
